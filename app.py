@@ -190,11 +190,11 @@ st.markdown("""
 # Page Config
 st.set_page_config(page_title="SAP FICO Chatbot", page_icon="⚖️", layout="wide")
 
-# Initialize ALL session states
+# Initialize session states
 if 'last_answer' not in st.session_state:
     st.session_state.last_answer = ""
-if 'query_input' not in st.session_state:
-    st.session_state.query_input = ""
+if 'reset_counter' not in st.session_state:
+    st.session_state.reset_counter = 0
 
 # Title
 st.markdown('<h1 class="main-title">⚖️ SAP S/4HANA FICO Chatbot</h1>', unsafe_allow_html=True)
@@ -204,9 +204,9 @@ st.markdown('<p class="subtitle">70+ Topics | Powered by Qwen 2.5 72B</p>', unsa
 with st.sidebar:
     st.markdown("### 🎯 Controls")
     if st.button("🔄 Reset Chat", use_container_width=True, key="reset_btn"):
-        # Clear ALL session states on reset
+        # Clear session states
         st.session_state.last_answer = ""
-        st.session_state.query_input = ""
+        st.session_state.reset_counter += 1  # Increment to force widget refresh
         st.rerun()
     st.info("🤖 Model: qwen-2.5-72b-instruct")
     st.success("📚 KB: 70 Topics")
@@ -241,20 +241,16 @@ st.info("💡 **How to use:** Select any suggestion text above → Right-click �
 
 st.markdown("---")
 
-# Query Input
+# Query Input - Use reset_counter as part of key to force refresh on reset
 st.markdown('<p class="section-header">📝 Enter Your SAP FICO Query:</p>', unsafe_allow_html=True)
 
 user_query = st.text_area(
     label="Query Input",
-    value=st.session_state.query_input,
+    value="",
     height=150,
     placeholder="📋 Copy a suggestion above (right-click) and paste here, or type your own question...",
-    key="query_input_area"
+    key=f"query_input_{st.session_state.reset_counter}"
 )
-
-# Update session state when user types
-if user_query != st.session_state.query_input:
-    st.session_state.query_input = user_query
 
 # Submit Button
 st.markdown('<div class="submit-btn">', unsafe_allow_html=True)
