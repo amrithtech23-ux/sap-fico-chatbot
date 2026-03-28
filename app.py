@@ -11,7 +11,7 @@ MODEL = "qwen/qwen-2.5-72b-instruct"
 # 📚 COMPREHENSIVE KNOWLEDGE BASE
 KB = """
 ================================================================================
-SAP S/4HANA FICO COMPREHENSIVE KNOWLEDGE BASE
+SAP S/4 HANA FICO COMPREHENSIVE KNOWLEDGE BASE
 ================================================================================
 
 ## SECTION 1: FOR COMMERCE STUDENTS
