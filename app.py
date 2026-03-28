@@ -1,4 +1,4 @@
- import streamlit as st
+import streamlit as st
 import requests
 import os
 import random
@@ -109,7 +109,7 @@ SUGGESTIONS = [
     "How FICO integrates with SD/MM modules?"
 ]
 
-# Custom CSS - Clean suggestion boxes
+# Custom CSS
 st.markdown("""
 <style>
 .main-title {
@@ -159,7 +159,6 @@ st.markdown("""
     margin: 5px !important;
     text-align: center !important;
     cursor: text !important;
-    user-select: text !important;
 }
 .suggestion-text {
     color: #00008B !important;
@@ -208,16 +207,16 @@ with st.sidebar:
     st.info("🤖 Model: qwen-2.5-72b-instruct")
     st.success("📚 KB: 70 Topics")
 
-# Suggestion Prompts - Clean boxes (right-click to copy)
+# Suggestion Prompts
 st.markdown('<p class="section-header">💡 Suggestion Prompts (Select text → Right-click → Copy):</p>', unsafe_allow_html=True)
 
-# Display 10 prompts in 2 rows of 5 columns
+# Display 10 prompts in 2 rows
 cols_row1 = st.columns(5)
 cols_row2 = st.columns(5)
 
 display_prompts = random.sample(SUGGESTIONS, 10)
 
-# First row (5 prompts) - Clean boxes, no buttons
+# First row
 for i, prompt in enumerate(display_prompts[:5]):
     with cols_row1[i]:
         st.markdown(f"""
@@ -226,7 +225,7 @@ for i, prompt in enumerate(display_prompts[:5]):
         </div>
         """, unsafe_allow_html=True)
 
-# Second row (5 prompts) - Clean boxes, no buttons
+# Second row
 for i, prompt in enumerate(display_prompts[5:10]):
     with cols_row2[i]:
         st.markdown(f"""
@@ -255,21 +254,18 @@ st.markdown('<div class="submit-btn">', unsafe_allow_html=True)
 submit_btn = st.button("🚀 Submit Query", type="primary", use_container_width=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Process query when submit clicked
+# Process query
 if submit_btn:
     if not user_query.strip():
         st.warning("⚠️ Please copy a suggestion or type a question first.")
     elif not API_KEY:
-        st.error("🔑 API Key 'OPENROUTER_API_KEY' not configured in Streamlit Cloud secrets!")
-        st.info("Go to Settings → Secrets → Add OPENROUTER_API_KEY")
+        st.error("🔑 API Key not configured!")
     else:
         with st.spinner("🔍 Consulting SAP Knowledge Base..."):
             try:
                 headers = {
                     "Authorization": f"Bearer {API_KEY}",
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": "https://github.com/amrithtech23-ux/sap-fico-chatbot",
-                    "X-Title": "SAP S/4HANA FICO Chatbot"
+                    "Content-Type": "application/json"
                 }
                 
                 system_prompt = f"""You are an expert SAP S/4HANA FICO consultant.
@@ -279,10 +275,9 @@ Use this knowledge base:
 {KB}
 
 Guidelines:
-- Provide comprehensive, detailed answers (minimum 300 words)
-- Use bullet points, numbered lists, and headings
-- Reference specific topics from KB
-- Include practical examples"""
+- Provide comprehensive, detailed answers
+- Use bullet points and examples
+- Reference specific topics from KB"""
 
                 payload = {
                     "model": MODEL,
@@ -300,15 +295,6 @@ Guidelines:
                 answer = response.json()['choices'][0]['message']['content']
                 st.session_state.last_answer = answer
                 
-            except requests.exceptions.Timeout:
-                st.error("⏱️ Timeout: API request took too long. Please try again.")
-            except requests.exceptions.HTTPError as e:
-                if response.status_code == 401:
-                    st.error("🔑 Authentication failed. Check your OpenRouter API key.")
-                elif response.status_code == 429:
-                    st.error("⚠️ Rate limit exceeded. Please wait and try again.")
-                else:
-                    st.error(f"❌ HTTP Error {response.status_code}: {str(e)}")
             except Exception as e:
                 st.error(f"❌ Error: {str(e)}")
 
@@ -316,8 +302,6 @@ Guidelines:
 if st.session_state.last_answer:
     st.markdown('<p class="section-header">📄 Result:</p>', unsafe_allow_html=True)
     st.markdown(f'<div class="result-box">{st.session_state.last_answer}</div>', unsafe_allow_html=True)
-    st.caption("💡 **Tip:** Select and copy the answer above for your notes.")
 
-# Footer
 st.markdown("---")
 st.caption("🎯 Target: Commerce | CS | MBA Finance | SAP Professionals | MIT License")
