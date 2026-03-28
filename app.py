@@ -109,7 +109,7 @@ SUGGESTIONS = [
     "How FICO integrates with SD/MM modules?"
 ]
 
-# Custom CSS
+# Custom CSS with Copy Functionality
 st.markdown("""
 <style>
 .main-title {
@@ -151,17 +151,31 @@ st.markdown("""
     white-space: pre-wrap !important;
     line-height: 1.6 !important;
 }
-.stButton > button {
+.suggestion-box {
+    background-color: white !important;
+    border: 2px solid #00008B !important;
+    border-radius: 8px !important;
+    padding: 15px !important;
+    margin: 5px !important;
+    text-align: center !important;
+}
+.suggestion-text {
     color: #00008B !important;
     font-weight: bold !important;
     font-size: 1.05rem !important;
-    border: 2px solid #00008B !important;
-    background-color: white !important;
-    padding: 12px 18px !important;
-    border-radius: 8px !important;
-    min-height: 60px !important;
+    margin-bottom: 10px !important;
 }
-.stButton > button:hover {
+.copy-btn {
+    background-color: #003366 !important;
+    color: white !important;
+    font-weight: bold !important;
+    font-size: 0.9rem !important;
+    border: 2px solid #00008B !important;
+    border-radius: 5px !important;
+    padding: 8px 15px !important;
+    cursor: pointer !important;
+}
+.copy-btn:hover {
     background-color: #00008B !important;
     color: white !important;
 }
@@ -189,8 +203,6 @@ st.markdown("""
 st.set_page_config(page_title="SAP FICO Chatbot", page_icon="⚖️", layout="wide")
 
 # Initialize session state
-if 'query_text' not in st.session_state:
-    st.session_state.query_text = ""
 if 'last_answer' not in st.session_state:
     st.session_state.last_answer = ""
 
@@ -202,35 +214,42 @@ st.markdown('<p class="subtitle">70+ Topics | Powered by Qwen 2.5 72B</p>', unsa
 with st.sidebar:
     st.markdown("### 🎯 Controls")
     if st.button("🔄 Reset Chat", use_container_width=True):
-        st.session_state.query_text = ""
         st.session_state.last_answer = ""
         st.rerun()
     st.info("🤖 Model: qwen-2.5-72b-instruct")
     st.success("📚 KB: 70 Topics")
 
-# Suggestion Prompts
-st.markdown('<p class="section-header">💡 Try These Prompts:</p>', unsafe_allow_html=True)
+# Suggestion Prompts with Copy Buttons
+st.markdown('<p class="section-header">💡 Suggestion Prompts (Click 📋 to Copy):</p>', unsafe_allow_html=True)
 
+# Display 10 prompts in 2 rows of 5 columns with Copy buttons
 cols_row1 = st.columns(5)
 cols_row2 = st.columns(5)
 
 display_prompts = random.sample(SUGGESTIONS, 10)
 
-# Function to set query
-def set_query(prompt):
-    st.session_state.query_text = prompt
+# Helper function to display suggestion with copy button
+def display_suggestion(col, prompt, key):
+    with col:
+        st.markdown(f"""
+        <div class="suggestion-box">
+            <p class="suggestion-text">{prompt}</p>
+            <button class="copy-btn" onclick="navigator.clipboard.writeText('{prompt}'); alert('Copied: {prompt}');">
+                📋 Copy
+            </button>
+        </div>
+        """, unsafe_allow_html=True)
 
-# First row
+# First row (5 prompts)
 for i, prompt in enumerate(display_prompts[:5]):
-    with cols_row1[i]:
-        if st.button(prompt, key=f"s1_{i}", use_container_width=True, on_click=set_query, args=(prompt,)):
-            pass  # Button click handled by on_click
+    display_suggestion(cols_row1[i], prompt, f"s1_{i}")
 
-# Second row
+# Second row (5 prompts)
 for i, prompt in enumerate(display_prompts[5:10]):
-    with cols_row2[i]:
-        if st.button(prompt, key=f"s2_{i}", use_container_width=True, on_click=set_query, args=(prompt,)):
-            pass  # Button click handled by on_click
+    display_suggestion(cols_row2[i], prompt, f"s2_{i}")
+
+# Copy Instructions
+st.info("💡 **How to use:** Click **📋 Copy** on any suggestion → Paste in the query box below → Click Submit")
 
 st.markdown("---")
 
@@ -239,15 +258,10 @@ st.markdown('<p class="section-header">📝 Enter Your SAP FICO Query:</p>', uns
 
 user_query = st.text_area(
     label="Query Input",
-    value=st.session_state.query_text,
     height=150,
-    placeholder="Click a suggestion above or type your question here...",
+    placeholder="📋 Copy a suggestion above and paste here, or type your own question...",
     key="query_input"
 )
-
-# Update session state when user types
-if user_query != st.session_state.query_text:
-    st.session_state.query_text = user_query
 
 # Submit Button
 st.markdown('<div class="submit-btn">', unsafe_allow_html=True)
@@ -257,15 +271,18 @@ st.markdown('</div>', unsafe_allow_html=True)
 # Process query when submit clicked
 if submit_btn:
     if not user_query.strip():
-        st.warning("⚠️ Please enter or select a question.")
+        st.warning("⚠️ Please copy a suggestion or type a question first.")
     elif not API_KEY:
-        st.error("🔑 API Key not configured!")
+        st.error("🔑 API Key 'OPENROUTER_API_KEY' not configured in Streamlit Cloud secrets!")
+        st.info("Go to Settings → Secrets → Add OPENROUTER_API_KEY")
     else:
         with st.spinner("🔍 Consulting SAP Knowledge Base..."):
             try:
                 headers = {
                     "Authorization": f"Bearer {API_KEY}",
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://github.com/amrithtech23-ux/sap-fico-chatbot",
+                    "X-Title": "SAP S/4HANA FICO Chatbot"
                 }
                 
                 system_prompt = f"""You are an expert SAP S/4HANA FICO consultant.
@@ -275,9 +292,10 @@ Use this knowledge base:
 {KB}
 
 Guidelines:
-- Provide comprehensive, detailed answers
-- Use bullet points and examples
-- Reference specific topics from KB"""
+- Provide comprehensive, detailed answers (minimum 300 words)
+- Use bullet points, numbered lists, and headings
+- Reference specific topics from KB
+- Include practical examples"""
 
                 payload = {
                     "model": MODEL,
@@ -295,6 +313,15 @@ Guidelines:
                 answer = response.json()['choices'][0]['message']['content']
                 st.session_state.last_answer = answer
                 
+            except requests.exceptions.Timeout:
+                st.error("⏱️ Timeout: API request took too long. Please try again.")
+            except requests.exceptions.HTTPError as e:
+                if response.status_code == 401:
+                    st.error("🔑 Authentication failed. Check your OpenRouter API key.")
+                elif response.status_code == 429:
+                    st.error("⚠️ Rate limit exceeded. Please wait and try again.")
+                else:
+                    st.error(f"❌ HTTP Error {response.status_code}: {str(e)}")
             except Exception as e:
                 st.error(f"❌ Error: {str(e)}")
 
@@ -302,6 +329,8 @@ Guidelines:
 if st.session_state.last_answer:
     st.markdown('<p class="section-header">📄 Result:</p>', unsafe_allow_html=True)
     st.markdown(f'<div class="result-box">{st.session_state.last_answer}</div>', unsafe_allow_html=True)
+    st.caption("💡 **Tip:** Select and copy the answer above for your notes.")
 
+# Footer
 st.markdown("---")
 st.caption("🎯 Target: Commerce | CS | MBA Finance | SAP Professionals | MIT License")
