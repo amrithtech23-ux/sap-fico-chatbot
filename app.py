@@ -1,4 +1,4 @@
-import streamlit as st
+ import streamlit as st
 import requests
 import os
 import random
@@ -109,7 +109,7 @@ SUGGESTIONS = [
     "How FICO integrates with SD/MM modules?"
 ]
 
-# Custom CSS with Copy Functionality
+# Custom CSS - Clean suggestion boxes
 st.markdown("""
 <style>
 .main-title {
@@ -155,29 +155,18 @@ st.markdown("""
     background-color: white !important;
     border: 2px solid #00008B !important;
     border-radius: 8px !important;
-    padding: 15px !important;
+    padding: 20px !important;
     margin: 5px !important;
     text-align: center !important;
+    cursor: text !important;
+    user-select: text !important;
 }
 .suggestion-text {
     color: #00008B !important;
     font-weight: bold !important;
     font-size: 1.05rem !important;
-    margin-bottom: 10px !important;
-}
-.copy-btn {
-    background-color: #003366 !important;
-    color: white !important;
-    font-weight: bold !important;
-    font-size: 0.9rem !important;
-    border: 2px solid #00008B !important;
-    border-radius: 5px !important;
-    padding: 8px 15px !important;
-    cursor: pointer !important;
-}
-.copy-btn:hover {
-    background-color: #00008B !important;
-    color: white !important;
+    margin: 0 !important;
+    user-select: text !important;
 }
 .submit-btn > button {
     background-color: #003366 !important;
@@ -219,37 +208,35 @@ with st.sidebar:
     st.info("🤖 Model: qwen-2.5-72b-instruct")
     st.success("📚 KB: 70 Topics")
 
-# Suggestion Prompts with Copy Buttons
-st.markdown('<p class="section-header">💡 Suggestion Prompts (Click 📋 to Copy):</p>', unsafe_allow_html=True)
+# Suggestion Prompts - Clean boxes (right-click to copy)
+st.markdown('<p class="section-header">💡 Suggestion Prompts (Select text → Right-click → Copy):</p>', unsafe_allow_html=True)
 
-# Display 10 prompts in 2 rows of 5 columns with Copy buttons
+# Display 10 prompts in 2 rows of 5 columns
 cols_row1 = st.columns(5)
 cols_row2 = st.columns(5)
 
 display_prompts = random.sample(SUGGESTIONS, 10)
 
-# Helper function to display suggestion with copy button
-def display_suggestion(col, prompt, key):
-    with col:
+# First row (5 prompts) - Clean boxes, no buttons
+for i, prompt in enumerate(display_prompts[:5]):
+    with cols_row1[i]:
         st.markdown(f"""
         <div class="suggestion-box">
             <p class="suggestion-text">{prompt}</p>
-            <button class="copy-btn" onclick="navigator.clipboard.writeText('{prompt}'); alert('Copied: {prompt}');">
-                📋 Copy
-            </button>
         </div>
         """, unsafe_allow_html=True)
 
-# First row (5 prompts)
-for i, prompt in enumerate(display_prompts[:5]):
-    display_suggestion(cols_row1[i], prompt, f"s1_{i}")
-
-# Second row (5 prompts)
+# Second row (5 prompts) - Clean boxes, no buttons
 for i, prompt in enumerate(display_prompts[5:10]):
-    display_suggestion(cols_row2[i], prompt, f"s2_{i}")
+    with cols_row2[i]:
+        st.markdown(f"""
+        <div class="suggestion-box">
+            <p class="suggestion-text">{prompt}</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-# Copy Instructions
-st.info("💡 **How to use:** Click **📋 Copy** on any suggestion → Paste in the query box below → Click Submit")
+# Instructions
+st.info("💡 **How to use:** Select any suggestion text above → Right-click → Copy → Paste in query box below → Click Submit")
 
 st.markdown("---")
 
@@ -259,7 +246,7 @@ st.markdown('<p class="section-header">📝 Enter Your SAP FICO Query:</p>', uns
 user_query = st.text_area(
     label="Query Input",
     height=150,
-    placeholder="📋 Copy a suggestion above and paste here, or type your own question...",
+    placeholder="📋 Copy a suggestion above (right-click) and paste here, or type your own question...",
     key="query_input"
 )
 
