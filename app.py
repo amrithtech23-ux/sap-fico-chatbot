@@ -109,10 +109,9 @@ SUGGESTIONS = [
     "How FICO integrates with SD/MM modules?"
 ]
 
-# Enhanced Custom CSS Styling
+# Custom CSS
 st.markdown("""
 <style>
-/* Main Title Styling */
 .main-title {
     font-size: 2.5rem !important;
     font-weight: bold !important;
@@ -120,21 +119,16 @@ st.markdown("""
     text-align: center !important;
     margin-bottom: 20px !important;
 }
-
-/* Subtitle/Caption Styling */
 .subtitle {
     font-size: 1.1rem !important;
     color: #666 !important;
     text-align: center !important;
     margin-bottom: 30px !important;
 }
-
-/* Input Text Area - Blue background, white bold text, bold border */
 .stTextArea label {
     font-weight: bold !important;
     font-size: 1.2rem !important;
     color: #00008B !important;
-    margin-bottom: 10px !important;
 }
 .stTextArea textarea {
     background-color: #003366 !important;
@@ -144,14 +138,7 @@ st.markdown("""
     border: 3px solid #00008B !important;
     border-radius: 8px !important;
     padding: 15px !important;
-    min-height: 120px !important;
 }
-.stTextArea textarea:focus {
-    border-color: #0000CD !important;
-    box-shadow: 0 0 10px rgba(0, 0, 139, 0.3) !important;
-}
-
-/* Result Display Box - Blue background, white bold text, bold border */
 .result-box {
     background-color: #003366 !important;
     color: white !important;
@@ -161,12 +148,9 @@ st.markdown("""
     border-radius: 8px !important;
     padding: 25px !important;
     margin-top: 20px !important;
-    margin-bottom: 20px !important;
     white-space: pre-wrap !important;
     line-height: 1.6 !important;
 }
-
-/* Suggestion Buttons - Royal blue text, bold, bigger font */
 .stButton > button {
     color: #00008B !important;
     font-weight: bold !important;
@@ -175,61 +159,20 @@ st.markdown("""
     background-color: white !important;
     padding: 12px 18px !important;
     border-radius: 8px !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    height: auto !important;
     min-height: 60px !important;
 }
 .stButton > button:hover {
     background-color: #00008B !important;
     color: white !important;
-    border-color: #00008B !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 139, 0.3) !important;
 }
-
-/* Submit Button Styling */
 .submit-btn > button {
     background-color: #003366 !important;
     color: white !important;
     font-weight: bold !important;
     font-size: 1.2rem !important;
     border: 3px solid #00008B !important;
-    border-radius: 8px !important;
     padding: 15px 30px !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
 }
-.submit-btn > button:hover {
-    background-color: #00008B !important;
-    border-color: #0000CD !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 139, 0.4) !important;
-}
-
-/* Reset Button Styling */
-.reset-btn > button {
-    background-color: #DC3545 !important;
-    color: white !important;
-    font-weight: bold !important;
-    font-size: 1rem !important;
-    border: 2px solid #C82333 !important;
-    border-radius: 6px !important;
-    padding: 10px 20px !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-}
-.reset-btn > button:hover {
-    background-color: #C82333 !important;
-    border-color: #BD2130 !important;
-}
-
-/* Sidebar Styling */
-.css-1d391kg {
-    background-color: #f8f9fa !important;
-}
-
-/* Section Headers */
 .section-header {
     font-size: 1.3rem !important;
     font-weight: bold !important;
@@ -239,160 +182,103 @@ st.markdown("""
     border-bottom: 2px solid #00008B !important;
     padding-bottom: 5px !important;
 }
-
-/* Info Boxes */
-.stInfo {
-    background-color: #e7f3ff !important;
-    border-left: 4px solid #00008B !important;
-    border-radius: 4px !important;
-}
-
-.stSuccess {
-    background-color: #d4edda !important;
-    border-left: 4px solid #28a745 !important;
-    border-radius: 4px !important;
-}
-
-/* Footer */
-.footer {
-    text-align: center !important;
-    color: #666 !important;
-    font-size: 0.9rem !important;
-    margin-top: 40px !important;
-    padding-top: 20px !important;
-    border-top: 1px solid #ddd !important;
-}
 </style>
 """, unsafe_allow_html=True)
 
 # Page Config
-st.set_page_config(
-    page_title="SAP FICO Chatbot",
-    page_icon="⚖️",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+st.set_page_config(page_title="SAP FICO Chatbot", page_icon="⚖️", layout="wide")
 
 # Initialize session state
-if 'selected_prompt' not in st.session_state:
-    st.session_state.selected_prompt = ""
+if 'query_text' not in st.session_state:
+    st.session_state.query_text = ""
 if 'last_answer' not in st.session_state:
     st.session_state.last_answer = ""
-if 'last_query' not in st.session_state:
-    st.session_state.last_query = ""
 
 # Title
 st.markdown('<h1 class="main-title">⚖️ SAP S/4HANA FICO Chatbot</h1>', unsafe_allow_html=True)
-st.markdown('<p class="subtitle">70+ Topics | Powered by Qwen 2.5 72B | For Commerce, CS, MBA Finance & SAP Professionals</p>', unsafe_allow_html=True)
+st.markdown('<p class="subtitle">70+ Topics | Powered by Qwen 2.5 72B</p>', unsafe_allow_html=True)
 
-# Sidebar with Reset Button
+# Sidebar
 with st.sidebar:
     st.markdown("### 🎯 Controls")
-    
-    # Reset Button
-    st.markdown('<div class="reset-btn">', unsafe_allow_html=True)
-    if st.button("🔄 Reset Chat", use_container_width=True, key="reset_btn"):
-        st.session_state.clear()
+    if st.button("🔄 Reset Chat", use_container_width=True):
+        st.session_state.query_text = ""
+        st.session_state.last_answer = ""
         st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
-    
-    st.markdown("---")
-    st.info("🤖 **Model:** qwen-2.5-72b-instruct")
-    st.success("📚 **Knowledge Base:** 70 Topics, 7 Categories")
-    
-    st.markdown("---")
-    st.markdown("### 🎓 Target Audience:")
-    st.markdown("- 📊 Commerce Students")
-    st.markdown("- 💻 Computer Science Students")
-    st.markdown("- 📈 MBA Finance Students")
-    st.markdown("- 🚀 SAP Aspirants")
-    st.markdown("- 👔 SAP Professionals")
-    
-    st.markdown("---")
-    st.caption("📄 License: MIT | 🐙 GitHub + Streamlit Cloud")
+    st.info("🤖 Model: qwen-2.5-72b-instruct")
+    st.success("📚 KB: 70 Topics")
 
-# System Suggestion Prompts (10 random prompts)
+# Suggestion Prompts
 st.markdown('<p class="section-header">💡 Try These Prompts:</p>', unsafe_allow_html=True)
 
-# Display 10 prompts in 2 rows of 5 columns
 cols_row1 = st.columns(5)
 cols_row2 = st.columns(5)
 
-# Shuffle and select prompts
-display_prompts = random.sample(SUGGESTIONS, min(10, len(SUGGESTIONS)))
+display_prompts = random.sample(SUGGESTIONS, 10)
 
-# First row (5 prompts) - FIXED: No auto-submit, just populate text box
+# Function to set query
+def set_query(prompt):
+    st.session_state.query_text = prompt
+
+# First row
 for i, prompt in enumerate(display_prompts[:5]):
     with cols_row1[i]:
-        if st.button(prompt, key=f"s1_{i}", use_container_width=True):
-            st.session_state.selected_prompt = prompt
-            # Don't rerun, just let the text area update
+        if st.button(prompt, key=f"s1_{i}", use_container_width=True, on_click=set_query, args=(prompt,)):
+            pass  # Button click handled by on_click
 
-# Second row (5 prompts) - FIXED: No auto-submit, just populate text box
+# Second row
 for i, prompt in enumerate(display_prompts[5:10]):
     with cols_row2[i]:
-        if st.button(prompt, key=f"s2_{i}", use_container_width=True):
-            st.session_state.selected_prompt = prompt
-            # Don't rerun, just let the text area update
+        if st.button(prompt, key=f"s2_{i}", use_container_width=True, on_click=set_query, args=(prompt,)):
+            pass  # Button click handled by on_click
 
 st.markdown("---")
 
-# Text Field 1: User Query Input
+# Query Input
 st.markdown('<p class="section-header">📝 Enter Your SAP FICO Query:</p>', unsafe_allow_html=True)
 
 user_query = st.text_area(
     label="Query Input",
-    value=st.session_state.selected_prompt if st.session_state.selected_prompt else st.session_state.get("user_query", ""),
+    value=st.session_state.query_text,
     height=150,
-    placeholder="e.g., Explain Universal Journal (ACDOCA) in SAP S/4HANA...",
-    key="query_input",
-    help="Type your SAP FICO question here or click a suggestion above. Click Submit to get answer.",
-    on_change=lambda: st.session_state.update(user_query=st.session_state.query_input)
+    placeholder="Click a suggestion above or type your question here...",
+    key="query_input"
 )
+
+# Update session state when user types
+if user_query != st.session_state.query_text:
+    st.session_state.query_text = user_query
 
 # Submit Button
 st.markdown('<div class="submit-btn">', unsafe_allow_html=True)
-submit_btn = st.button("🚀 Submit Query", type="primary", use_container_width=True, key="submit_btn")
+submit_btn = st.button("🚀 Submit Query", type="primary", use_container_width=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Processing Logic - ONLY when Submit button is clicked
+# Process query when submit clicked
 if submit_btn:
     if not user_query.strip():
-        st.warning("⚠️ Please enter a question or click a suggestion prompt first.")
+        st.warning("⚠️ Please enter or select a question.")
     elif not API_KEY:
-        st.error("🔑 API Key 'OPENROUTER_API_KEY' not configured in Streamlit Cloud secrets!")
-        st.info("Go to Settings → Secrets → Add OPENROUTER_API_KEY")
+        st.error("🔑 API Key not configured!")
     else:
         with st.spinner("🔍 Consulting SAP Knowledge Base..."):
             try:
-                # Prepare API request headers
                 headers = {
                     "Authorization": f"Bearer {API_KEY}",
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": "https://github.com/amrithtech23-ux/sap-fico-chatbot",
-                    "X-Title": "SAP S/4HANA FICO Chatbot"
+                    "Content-Type": "application/json"
                 }
                 
-                # System prompt with knowledge base
-                system_prompt = f"""You are an expert SAP S/4HANA FICO consultant and educator.
+                system_prompt = f"""You are an expert SAP S/4HANA FICO consultant.
+Target: Commerce, CS, MBA Finance students, SAP aspirants and professionals.
 
-Target audience: Commerce students, Computer Science students, MBA Finance students, 
-SAP ERP aspirants, job seekers in SAP FICO, and SAP professionals.
-
-Use this knowledge base for accurate, domain-specific answers:
+Use this knowledge base:
 {KB}
 
 Guidelines:
-- Provide COMPREHENSIVE, detailed answers (minimum 300 words)
-- Use bullet points, numbered lists, and headings where appropriate
-- Reference specific topics from the knowledge base when relevant
-- Explain concepts clearly tailored to the user's likely background
-- Include practical examples and real-world scenarios
-- If unsure about a detail, say "Let me check the SAP documentation" rather than guessing
-- Structure answers with: Overview, Key Points, Benefits/Challenges, Examples
-"""
-                
-                # Prepare API payload
+- Provide comprehensive, detailed answers
+- Use bullet points and examples
+- Reference specific topics from KB"""
+
                 payload = {
                     "model": MODEL,
                     "messages": [
@@ -403,44 +289,19 @@ Guidelines:
                     "temperature": 0.3
                 }
                 
-                # Call OpenRouter API
                 response = requests.post(API_URL, headers=headers, json=payload, timeout=60)
                 response.raise_for_status()
                 
-                # Extract answer
-                result_data = response.json()
-                bot_answer = result_data['choices'][0]['message']['content']
+                answer = response.json()['choices'][0]['message']['content']
+                st.session_state.last_answer = answer
                 
-                # Store in session state
-                st.session_state.last_query = user_query
-                st.session_state.last_answer = bot_answer
-                # Clear selected prompt after submission
-                st.session_state.selected_prompt = ""
-                
-                # Force rerun to show result
-                st.rerun()
-                
-            except requests.exceptions.Timeout:
-                st.error("⏱️ Timeout: API request took too long. Please try again.")
-            except requests.exceptions.HTTPError as e:
-                if response.status_code == 401:
-                    st.error("🔑 Authentication failed. Check your OpenRouter API key.")
-                elif response.status_code == 429:
-                    st.error("⚠️ Rate limit exceeded. Please wait a moment and try again.")
-                else:
-                    st.error(f"❌ HTTP Error {response.status_code}: {str(e)}")
             except Exception as e:
                 st.error(f"❌ Error: {str(e)}")
 
-# Text Field 2: Result Display (Multi-line)
-if st.session_state.get("last_answer"):
+# Display Result
+if st.session_state.last_answer:
     st.markdown('<p class="section-header">📄 Result:</p>', unsafe_allow_html=True)
-    # Display with custom styling (blue background, white bold text, bold border)
     st.markdown(f'<div class="result-box">{st.session_state.last_answer}</div>', unsafe_allow_html=True)
-    
-    # Optional: Copy button for result
-    st.caption("💡 **Tip:** Select and copy the answer above for your notes or documentation.")
 
-# Footer
 st.markdown("---")
-st.markdown('<p class="footer">🎯 Target: Commerce | CS | MBA Finance | SAP Aspirants | SAP Professionals | 📄 MIT License | 🚀 Powered by Qwen 2.5 72B via OpenRouter</p>', unsafe_allow_html=True)
+st.caption("🎯 Target: Commerce | CS | MBA Finance | SAP Professionals | MIT License")
