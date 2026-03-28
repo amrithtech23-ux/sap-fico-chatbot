@@ -273,6 +273,14 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Initialize session state
+if 'selected_prompt' not in st.session_state:
+    st.session_state.selected_prompt = ""
+if 'last_answer' not in st.session_state:
+    st.session_state.last_answer = ""
+if 'last_query' not in st.session_state:
+    st.session_state.last_query = ""
+
 # Title
 st.markdown('<h1 class="main-title">⚖️ SAP S/4HANA FICO Chatbot</h1>', unsafe_allow_html=True)
 st.markdown('<p class="subtitle">70+ Topics | Powered by Qwen 2.5 72B | For Commerce, CS, MBA Finance & SAP Professionals</p>', unsafe_allow_html=True)
@@ -313,19 +321,19 @@ cols_row2 = st.columns(5)
 # Shuffle and select prompts
 display_prompts = random.sample(SUGGESTIONS, min(10, len(SUGGESTIONS)))
 
-# First row (5 prompts)
+# First row (5 prompts) - FIXED: No auto-submit, just populate text box
 for i, prompt in enumerate(display_prompts[:5]):
     with cols_row1[i]:
         if st.button(prompt, key=f"s1_{i}", use_container_width=True):
             st.session_state.selected_prompt = prompt
-            st.rerun()
+            # Don't rerun, just let the text area update
 
-# Second row (5 prompts)
+# Second row (5 prompts) - FIXED: No auto-submit, just populate text box
 for i, prompt in enumerate(display_prompts[5:10]):
     with cols_row2[i]:
         if st.button(prompt, key=f"s2_{i}", use_container_width=True):
             st.session_state.selected_prompt = prompt
-            st.rerun()
+            # Don't rerun, just let the text area update
 
 st.markdown("---")
 
@@ -334,11 +342,12 @@ st.markdown('<p class="section-header">📝 Enter Your SAP FICO Query:</p>', uns
 
 user_query = st.text_area(
     label="Query Input",
-    value=st.session_state.get("selected_prompt", ""),
+    value=st.session_state.selected_prompt if st.session_state.selected_prompt else st.session_state.get("user_query", ""),
     height=150,
     placeholder="e.g., Explain Universal Journal (ACDOCA) in SAP S/4HANA...",
     key="query_input",
-    help="Type your SAP FICO question here. Be specific for better answers."
+    help="Type your SAP FICO question here or click a suggestion above. Click Submit to get answer.",
+    on_change=lambda: st.session_state.update(user_query=st.session_state.query_input)
 )
 
 # Submit Button
@@ -346,10 +355,10 @@ st.markdown('<div class="submit-btn">', unsafe_allow_html=True)
 submit_btn = st.button("🚀 Submit Query", type="primary", use_container_width=True, key="submit_btn")
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Processing Logic
-if submit_btn or st.session_state.get("selected_prompt"):
+# Processing Logic - ONLY when Submit button is clicked
+if submit_btn:
     if not user_query.strip():
-        st.warning("⚠️ Please enter a question first.")
+        st.warning("⚠️ Please enter a question or click a suggestion prompt first.")
     elif not API_KEY:
         st.error("🔑 API Key 'OPENROUTER_API_KEY' not configured in Streamlit Cloud secrets!")
         st.info("Go to Settings → Secrets → Add OPENROUTER_API_KEY")
@@ -405,7 +414,11 @@ Guidelines:
                 # Store in session state
                 st.session_state.last_query = user_query
                 st.session_state.last_answer = bot_answer
-                st.session_state.selected_prompt = None  # Clear after use
+                # Clear selected prompt after submission
+                st.session_state.selected_prompt = ""
+                
+                # Force rerun to show result
+                st.rerun()
                 
             except requests.exceptions.Timeout:
                 st.error("⏱️ Timeout: API request took too long. Please try again.")
