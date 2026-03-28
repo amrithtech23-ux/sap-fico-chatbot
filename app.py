@@ -1,22 +1,206 @@
+import streamlit as st
+import requests
+import os
+import random
 
-**Conclusion:**
+# Configuration
+API_URL = "https://openrouter.ai/api/v1/chat/completions"
+API_KEY = os.environ.get("OPENROUTER_API_KEY")
+MODEL = "qwen/qwen-2.5-72b-instruct"
 
-The Universal Journal (ACDOCA) is the **foundation of SAP S/4HANA Finance** and represents a **revolutionary simplification** of financial data management. It eliminates the complexity of traditional ERP systems by providing:
+# 📚 KNOWLEDGE BASE
+KB = """
+SAP S/4HANA FICO Complete Knowledge Base
 
-✅ **Single source of truth** - No reconciliation
-✅ **Real-time processing** - Instant reporting
-✅ **Simplified architecture** - 1 table vs 500+
-✅ **Multi-dimensional reporting** - Unlimited analysis
-✅ **Parallel accounting** - Multiple principles simultaneously
-✅ **Faster closing** - 70-80% time reduction
-✅ **Better performance** - 10-100x faster
-✅ **Lower TCO** - Reduced storage and maintenance
+FOR COMMERCE STUDENTS:
+1. What is ERP and why do businesses need it?
+   - ERP integrates all business functions into one system
+   - Eliminates data silos and redundancy
+   - Provides real-time visibility across the organization
+   - Improves efficiency and decision-making
 
-This is the **single most important innovation** in SAP S/4HANA Finance and the key differentiator from traditional ERP systems.
+2. History and evolution of SAP - from R/1 to S/4HANA
+   - 1972: SAP R/1 (Real-time data processing)
+   - 1979: SAP R/2 (Client-server architecture)
+   - 1992: SAP R/3 (3-tier architecture)
+   - 2004: SAP ECC 6.0 (Enhanced functionality)
+   - 2015: SAP S/4HANA (Next-generation ERP on HANA)
 
----
+3. SAP modules overview: FI, CO, SD, MM, HR, PP
+   - FI: Financial Accounting (GL, AP, AR, Assets)
+   - CO: Controlling (Cost centers, Profit centers)
+   - SD: Sales and Distribution
+   - MM: Materials Management
+   - HR: Human Resources
+   - PP: Production Planning
 
-[Continue with detailed content for remaining topics...]
+4. On-premise vs cloud deployment
+   - On-premise: Installed on company servers, full control
+   - Cloud: Hosted by SAP, subscription-based, faster deployment
+   - Hybrid: Combination of both
+
+5. SAP landscapes: Development, Quality, Production
+   - DEV: For development and configuration
+   - QAS: For testing and validation
+   - PRD: Live production system
+
+FOR COMPUTER SCIENCE STUDENTS:
+6. SAP S/4HANA Technical Architecture
+   - Three-tier architecture: Presentation, Application, Database
+   - SAP Fiori: Modern web-based user interface
+   - ABAP Application Server: Business logic execution
+   - SAP HANA Database: In-memory, column-oriented database
+
+7. Universal Journal (ACDOCA) data modeling
+   - Single table replaces 500+ tables
+   - Combines FI and CO data
+   - Real-time reporting and analytics
+   - Simplified data structure
+
+8. HANA Database features
+   - In-memory computing (data in RAM)
+   - Column-based storage
+   - 10,000x faster than traditional databases
+   - Real-time data processing
+
+9. ABAP development environment
+   - ABAP Workbench
+   - Eclipse-based ADT (ABAP Development Tools)
+   - CDS Views (Core Data Services)
+   - AMDP (ABAP Managed Database Procedures)
+
+10. Fiori architecture
+    - Role-based, personalized interface
+    - Responsive design (works on any device)
+    - Tile-based launchpad
+    - RESTful APIs
+
+FOR MBA FINANCE STUDENTS:
+11. Universal Journal (ACDOCA) significance
+    - Single source of truth for finance
+    - Combines General Ledger, AP, AR, Assets, Controlling
+    - Eliminates reconciliation between FI and CO
+    - Real-time financial reporting
+    - Multi-currency and parallel accounting support
+
+12. Benefits of single source of truth
+    - No data redundancy
+    - Consistent numbers across all reports
+    - Instant financial statements
+    - Faster month-end closing (70-80% time reduction)
+
+13. Multiple accounting principles
+    - Support IFRS and Local GAAP simultaneously
+    - Parallel valuation approaches
+    - Different ledgers for different principles
+    - Automatic currency conversion
+
+14. Real-time reconciliation
+    - FI and CO always in sync
+    - No batch jobs needed
+    - Instant balance sheet and P&L
+    - Live cash flow reporting
+
+15. Segment reporting
+    - Automatic segment derivation
+    - IFRS 8 compliance
+    - Profit center and segment reporting
+    - Real-time segment profitability
+
+FOR SAP ASPIRANTS:
+16. Prerequisites for learning SAP S/4HANA
+    - Basic understanding of business processes
+    - For FICO: Accounting fundamentals
+    - For technical: Programming basics helpful
+    - Willingness to learn continuously
+
+17. Certification tracks
+    - Associate Level: Entry-level certification
+    - Professional Level: Advanced certification
+    - Specialized certifications (FICO, MM, SD, etc.)
+    - SAP Learning Hub access required
+
+18. SAP Learning Hub
+    - Online learning platform
+    - Access to training materials
+    - Practice systems
+    - Certification preparation
+    - Subscription-based
+
+19. OpenSAP free courses
+    - Free MOOCs on SAP topics
+    - Self-paced learning
+    - Certificates of completion
+    - Regular new courses
+
+20. Career paths after certification
+    - Functional Consultant
+    - Technical Consultant (ABAP)
+    - Business Analyst
+    - Project Manager
+    - Solution Architect
+
+FOR SAP PROFESSIONALS:
+21. Migration paths to S/4HANA
+    - System Conversion: Technical upgrade of existing system
+    - Landscape Transformation: Selective data migration
+    - New Implementation: Greenfield implementation
+
+22. System Conversion approach
+    - Brownfield approach
+    - Existing processes and customizations retained
+    - Technical upgrade to S/4HANA
+    - Faster than new implementation
+
+23. Landscape Transformation
+    - Selective data migration
+    - Merge multiple systems into one
+    - Data archiving and cleansing
+    - Complex but flexible
+
+24. New Implementation
+    - Greenfield approach
+    - Start fresh with S/4HANA
+    - Process redesign opportunity
+    - Cleanest approach but most time-consuming
+
+25. SAP Readiness Check
+    - Analyze current system
+    - Identify custom code issues
+    - Check add-on compatibility
+    - Preparation for migration
+
+26. Simplification List
+    - Documents all changes in S/4HANA
+    - Removed or changed functionalities
+    - New features and capabilities
+    - Essential for migration planning
+
+27. Migration Cockpit and LTMC
+    - Migration Cockpit: Data migration tool
+    - LTMC: Legacy Transfer Migration Cockpit
+    - Pre-defined migration objects
+    - Guided data migration process
+
+28. Custom code handling
+    - Custom code analysis
+    - Adaptation or optimization
+    - Use standard functionality where possible
+    - Performance optimization
+
+29. Post-migration testing
+    - Unit testing
+    - Integration testing
+    - User Acceptance Testing (UAT)
+    - Performance testing
+    - Regression testing
+
+30. Key Tools and Resources
+    - SAP Help Portal
+    - SAP Community
+    - SAP Notes
+    - SAP Service Marketplace
+    - SAP Support Portal
 """
 
 # 10 Suggestion Prompts
@@ -132,18 +316,17 @@ if st.button("🚀 Submit", type="primary", use_container_width=True):
                     "Content-Type": "application/json"
                 }
                 
-                system_prompt = f"""You are an expert SAP S/4HANA FICO consultant and educator.
+                system_prompt = f"""You are an expert SAP S/4HANA FICO consultant.
 Target: Commerce students, CS students, MBA Finance, SAP aspirants, professionals.
 
-Use this knowledge base for accurate answers:
+Use this knowledge base:
 {KB}
 
 Guidelines:
-- Provide COMPREHENSIVE, detailed answers
-- Use bullet points, numbered lists, and examples
+- Provide comprehensive, detailed answers
+- Use bullet points and examples
 - Reference specific topics from KB
-- Explain concepts clearly for different audiences
-- If unsure, say 'Let me check SAP documentation'"""
+- Explain clearly for different audiences"""
 
                 payload = {
                     "model": MODEL,
@@ -151,7 +334,7 @@ Guidelines:
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": user_query}
                     ],
-                    "max_tokens": 1500,  # Increased for complete answers
+                    "max_tokens": 1500,
                     "temperature": 0.3
                 }
                 
