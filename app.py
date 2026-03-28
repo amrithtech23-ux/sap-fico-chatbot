@@ -190,19 +190,23 @@ st.markdown("""
 # Page Config
 st.set_page_config(page_title="SAP FICO Chatbot", page_icon="⚖️", layout="wide")
 
-# Initialize session state
+# Initialize ALL session states
 if 'last_answer' not in st.session_state:
     st.session_state.last_answer = ""
+if 'query_input' not in st.session_state:
+    st.session_state.query_input = ""
 
 # Title
 st.markdown('<h1 class="main-title">⚖️ SAP S/4HANA FICO Chatbot</h1>', unsafe_allow_html=True)
 st.markdown('<p class="subtitle">70+ Topics | Powered by Qwen 2.5 72B</p>', unsafe_allow_html=True)
 
-# Sidebar
+# Sidebar with Reset Button
 with st.sidebar:
     st.markdown("### 🎯 Controls")
-    if st.button("🔄 Reset Chat", use_container_width=True):
+    if st.button("🔄 Reset Chat", use_container_width=True, key="reset_btn"):
+        # Clear ALL session states on reset
         st.session_state.last_answer = ""
+        st.session_state.query_input = ""
         st.rerun()
     st.info("🤖 Model: qwen-2.5-72b-instruct")
     st.success("📚 KB: 70 Topics")
@@ -210,10 +214,8 @@ with st.sidebar:
 # Suggestion Prompts
 st.markdown('<p class="section-header">💡 Suggestion Prompts (Select text → Right-click → Copy):</p>', unsafe_allow_html=True)
 
-# Display 10 prompts in 2 rows
 cols_row1 = st.columns(5)
 cols_row2 = st.columns(5)
-
 display_prompts = random.sample(SUGGESTIONS, 10)
 
 # First row
@@ -244,10 +246,15 @@ st.markdown('<p class="section-header">📝 Enter Your SAP FICO Query:</p>', uns
 
 user_query = st.text_area(
     label="Query Input",
+    value=st.session_state.query_input,
     height=150,
     placeholder="📋 Copy a suggestion above (right-click) and paste here, or type your own question...",
-    key="query_input"
+    key="query_input_area"
 )
+
+# Update session state when user types
+if user_query != st.session_state.query_input:
+    st.session_state.query_input = user_query
 
 # Submit Button
 st.markdown('<div class="submit-btn">', unsafe_allow_html=True)
