@@ -8,199 +8,91 @@ API_URL = "https://openrouter.ai/api/v1/chat/completions"
 API_KEY = os.environ.get("OPENROUTER_API_KEY")
 MODEL = "qwen/qwen-2.5-72b-instruct"
 
-# 📚 KNOWLEDGE BASE
+# Knowledge Base
 KB = """
-SAP S/4HANA FICO Complete Knowledge Base
+SAP S/4HANA FICO Knowledge Base
 
 FOR COMMERCE STUDENTS:
-1. What is ERP and why do businesses need it?
-   - ERP integrates all business functions into one system
-   - Eliminates data silos and redundancy
-   - Provides real-time visibility across the organization
-   - Improves efficiency and decision-making
-
-2. History and evolution of SAP - from R/1 to S/4HANA
-   - 1972: SAP R/1 (Real-time data processing)
-   - 1979: SAP R/2 (Client-server architecture)
-   - 1992: SAP R/3 (3-tier architecture)
-   - 2004: SAP ECC 6.0 (Enhanced functionality)
-   - 2015: SAP S/4HANA (Next-generation ERP on HANA)
-
-3. SAP modules overview: FI, CO, SD, MM, HR, PP
-   - FI: Financial Accounting (GL, AP, AR, Assets)
-   - CO: Controlling (Cost centers, Profit centers)
-   - SD: Sales and Distribution
-   - MM: Materials Management
-   - HR: Human Resources
-   - PP: Production Planning
-
+1. ERP basics and business needs
+2. SAP evolution from R/1 to S/4HANA
+3. SAP modules: FI, CO, SD, MM, HR, PP
 4. On-premise vs cloud deployment
-   - On-premise: Installed on company servers, full control
-   - Cloud: Hosted by SAP, subscription-based, faster deployment
-   - Hybrid: Combination of both
-
-5. SAP landscapes: Development, Quality, Production
-   - DEV: For development and configuration
-   - QAS: For testing and validation
-   - PRD: Live production system
+5. SAP landscapes: DEV, QAS, PRD
+6. Digital transformation with SAP
+7. Industry-specific solutions
+8. SAP licensing models
+9. Implementation methodologies
+10. Business process integration
 
 FOR COMPUTER SCIENCE STUDENTS:
-6. SAP S/4HANA Technical Architecture
-   - Three-tier architecture: Presentation, Application, Database
-   - SAP Fiori: Modern web-based user interface
-   - ABAP Application Server: Business logic execution
-   - SAP HANA Database: In-memory, column-oriented database
-
-7. Universal Journal (ACDOCA) data modeling
-   - Single table replaces 500+ tables
-   - Combines FI and CO data
-   - Real-time reporting and analytics
-   - Simplified data structure
-
-8. HANA Database features
-   - In-memory computing (data in RAM)
-   - Column-based storage
-   - 10,000x faster than traditional databases
-   - Real-time data processing
-
-9. ABAP development environment
-   - ABAP Workbench
-   - Eclipse-based ADT (ABAP Development Tools)
-   - CDS Views (Core Data Services)
-   - AMDP (ABAP Managed Database Procedures)
-
-10. Fiori architecture
-    - Role-based, personalized interface
-    - Responsive design (works on any device)
-    - Tile-based launchpad
-    - RESTful APIs
+11. S/4HANA technical architecture
+12. Universal Journal ACDOCA data modeling
+13. HANA database in-memory computing
+14. Deployment options technical details
+15. ABAP development environment
+16. CDS Views and data modeling
+17. Multi-tenancy cloud architecture
+18. Fiori architecture and gateway
+19. Extensibility options
+20. Performance optimization
 
 FOR MBA FINANCE STUDENTS:
-11. Universal Journal (ACDOCA) significance
-    - Single source of truth for finance
-    - Combines General Ledger, AP, AR, Assets, Controlling
-    - Eliminates reconciliation between FI and CO
-    - Real-time financial reporting
-    - Multi-currency and parallel accounting support
-
-12. Benefits of single source of truth
-    - No data redundancy
-    - Consistent numbers across all reports
-    - Instant financial statements
-    - Faster month-end closing (70-80% time reduction)
-
-13. Multiple accounting principles
-    - Support IFRS and Local GAAP simultaneously
-    - Parallel valuation approaches
-    - Different ledgers for different principles
-    - Automatic currency conversion
-
-14. Real-time reconciliation
-    - FI and CO always in sync
-    - No batch jobs needed
-    - Instant balance sheet and P&L
-    - Live cash flow reporting
-
-15. Segment reporting
-    - Automatic segment derivation
-    - IFRS 8 compliance
-    - Profit center and segment reporting
-    - Real-time segment profitability
+21. Universal Journal ACDOCA significance
+22. Single source of truth benefits
+23. Multiple accounting principles support
+24. Real-time reconciliation FI-CO
+25. Segment reporting and compliance
+26. Financial reporting impact
+27. Closing processes improvement
+28. Parallel valuation approaches
+29. Currency management
+30. Regulatory compliance support
 
 FOR SAP ASPIRANTS:
-16. Prerequisites for learning SAP S/4HANA
-    - Basic understanding of business processes
-    - For FICO: Accounting fundamentals
-    - For technical: Programming basics helpful
-    - Willingness to learn continuously
-
-17. Certification tracks
-    - Associate Level: Entry-level certification
-    - Professional Level: Advanced certification
-    - Specialized certifications (FICO, MM, SD, etc.)
-    - SAP Learning Hub access required
-
-18. SAP Learning Hub
-    - Online learning platform
-    - Access to training materials
-    - Practice systems
-    - Certification preparation
-    - Subscription-based
-
-19. OpenSAP free courses
-    - Free MOOCs on SAP topics
-    - Self-paced learning
-    - Certificates of completion
-    - Regular new courses
-
-20. Career paths after certification
-    - Functional Consultant
-    - Technical Consultant (ABAP)
-    - Business Analyst
-    - Project Manager
-    - Solution Architect
+31. Prerequisites for learning SAP
+32. Certification tracks and levels
+33. SAP Learning Hub access
+34. OpenSAP free courses
+35. Module selection for career
+36. Self-study resources
+37. Certification exam pattern
+38. Demo systems access
+39. Cloud vs On-Prem learning
+40. Career paths after certification
 
 FOR SAP PROFESSIONALS:
-21. Migration paths to S/4HANA
-    - System Conversion: Technical upgrade of existing system
-    - Landscape Transformation: Selective data migration
-    - New Implementation: Greenfield implementation
+41. Migration paths to S/4HANA
+42. System Conversion approach
+43. Landscape Transformation
+44. New Implementation greenfield
+45. SAP Readiness Check
+46. Simplification List analysis
+47. Pre-migration activities
+48. Migration Cockpit LTMC
+49. Custom code handling
+50. Post-migration testing
 
-22. System Conversion approach
-    - Brownfield approach
-    - Existing processes and customizations retained
-    - Technical upgrade to S/4HANA
-    - Faster than new implementation
-
-23. Landscape Transformation
-    - Selective data migration
-    - Merge multiple systems into one
-    - Data archiving and cleansing
-    - Complex but flexible
-
-24. New Implementation
-    - Greenfield approach
-    - Start fresh with S/4HANA
-    - Process redesign opportunity
-    - Cleanest approach but most time-consuming
-
-25. SAP Readiness Check
-    - Analyze current system
-    - Identify custom code issues
-    - Check add-on compatibility
-    - Preparation for migration
-
-26. Simplification List
-    - Documents all changes in S/4HANA
-    - Removed or changed functionalities
-    - New features and capabilities
-    - Essential for migration planning
-
-27. Migration Cockpit and LTMC
-    - Migration Cockpit: Data migration tool
-    - LTMC: Legacy Transfer Migration Cockpit
-    - Pre-defined migration objects
-    - Guided data migration process
-
-28. Custom code handling
-    - Custom code analysis
-    - Adaptation or optimization
-    - Use standard functionality where possible
-    - Performance optimization
-
-29. Post-migration testing
-    - Unit testing
-    - Integration testing
-    - User Acceptance Testing (UAT)
-    - Performance testing
-    - Regression testing
-
-30. Key Tools and Resources
-    - SAP Help Portal
-    - SAP Community
-    - SAP Notes
-    - SAP Service Marketplace
-    - SAP Support Portal
+ADDITIONAL TOPICS:
+51. FI vs CO difference and integration
+52. General Ledger accounting
+53. Accounts Payable and Receivable
+54. Asset Accounting
+55. Cost Center Accounting
+56. Profit Center Accounting
+57. Internal Orders
+58. Product Costing
+59. Profitability Analysis CO-PA
+60. Material Ledger
+61. Bank Accounting
+62. Travel Management
+63. Treasury Management
+64. Risk Management
+65. Compliance Management
+66. Financial Closing Cockpit
+67. Group Reporting
+68. Cash Management
+69. Credit Management
+70. Collections Management
 """
 
 # 10 Suggestion Prompts
@@ -217,13 +109,32 @@ SUGGESTIONS = [
     "How FICO integrates with SD/MM modules?"
 ]
 
-# Custom CSS Styling
+# Enhanced Custom CSS Styling
 st.markdown("""
 <style>
+/* Main Title Styling */
+.main-title {
+    font-size: 2.5rem !important;
+    font-weight: bold !important;
+    color: #003366 !important;
+    text-align: center !important;
+    margin-bottom: 20px !important;
+}
+
+/* Subtitle/Caption Styling */
+.subtitle {
+    font-size: 1.1rem !important;
+    color: #666 !important;
+    text-align: center !important;
+    margin-bottom: 30px !important;
+}
+
+/* Input Text Area - Blue background, white bold text, bold border */
 .stTextArea label {
     font-weight: bold !important;
-    font-size: 1.15rem !important;
+    font-size: 1.2rem !important;
     color: #00008B !important;
+    margin-bottom: 10px !important;
 }
 .stTextArea textarea {
     background-color: #003366 !important;
@@ -231,103 +142,248 @@ st.markdown("""
     font-weight: bold !important;
     font-size: 1.1rem !important;
     border: 3px solid #00008B !important;
-    border-radius: 8px;
+    border-radius: 8px !important;
+    padding: 15px !important;
+    min-height: 120px !important;
 }
+.stTextArea textarea:focus {
+    border-color: #0000CD !important;
+    box-shadow: 0 0 10px rgba(0, 0, 139, 0.3) !important;
+}
+
+/* Result Display Box - Blue background, white bold text, bold border */
 .result-box {
     background-color: #003366 !important;
     color: white !important;
     font-weight: bold !important;
     font-size: 1.1rem !important;
     border: 3px solid #00008B !important;
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 15px;
-    white-space: pre-wrap;
+    border-radius: 8px !important;
+    padding: 25px !important;
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
+    white-space: pre-wrap !important;
+    line-height: 1.6 !important;
 }
-.suggestion-btn {
+
+/* Suggestion Buttons - Royal blue text, bold, bigger font */
+.stButton > button {
     color: #00008B !important;
     font-weight: bold !important;
-    font-size: 1.1rem !important;
+    font-size: 1.05rem !important;
     border: 2px solid #00008B !important;
     background-color: white !important;
-    padding: 8px 12px !important;
-    border-radius: 6px;
-    cursor: pointer;
+    padding: 12px 18px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    height: auto !important;
+    min-height: 60px !important;
 }
-.suggestion-btn:hover {
+.stButton > button:hover {
     background-color: #00008B !important;
     color: white !important;
+    border-color: #00008B !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 139, 0.3) !important;
+}
+
+/* Submit Button Styling */
+.submit-btn > button {
+    background-color: #003366 !important;
+    color: white !important;
+    font-weight: bold !important;
+    font-size: 1.2rem !important;
+    border: 3px solid #00008B !important;
+    border-radius: 8px !important;
+    padding: 15px 30px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+.submit-btn > button:hover {
+    background-color: #00008B !important;
+    border-color: #0000CD !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 139, 0.4) !important;
+}
+
+/* Reset Button Styling */
+.reset-btn > button {
+    background-color: #DC3545 !important;
+    color: white !important;
+    font-weight: bold !important;
+    font-size: 1rem !important;
+    border: 2px solid #C82333 !important;
+    border-radius: 6px !important;
+    padding: 10px 20px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+.reset-btn > button:hover {
+    background-color: #C82333 !important;
+    border-color: #BD2130 !important;
+}
+
+/* Sidebar Styling */
+.css-1d391kg {
+    background-color: #f8f9fa !important;
+}
+
+/* Section Headers */
+.section-header {
+    font-size: 1.3rem !important;
+    font-weight: bold !important;
+    color: #003366 !important;
+    margin-top: 20px !important;
+    margin-bottom: 15px !important;
+    border-bottom: 2px solid #00008B !important;
+    padding-bottom: 5px !important;
+}
+
+/* Info Boxes */
+.stInfo {
+    background-color: #e7f3ff !important;
+    border-left: 4px solid #00008B !important;
+    border-radius: 4px !important;
+}
+
+.stSuccess {
+    background-color: #d4edda !important;
+    border-left: 4px solid #28a745 !important;
+    border-radius: 4px !important;
+}
+
+/* Footer */
+.footer {
+    text-align: center !important;
+    color: #666 !important;
+    font-size: 0.9rem !important;
+    margin-top: 40px !important;
+    padding-top: 20px !important;
+    border-top: 1px solid #ddd !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
 # Page Config
-st.set_page_config(page_title="SAP FICO Chatbot", page_icon="⚖️", layout="centered")
+st.set_page_config(
+    page_title="SAP FICO Chatbot",
+    page_icon="⚖️",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 # Title
-st.title("⚖️ SAP S/4HANA FICO Chatbot")
-st.caption("70+ Topics | Powered by Qwen 2.5 72B")
+st.markdown('<h1 class="main-title">⚖️ SAP S/4HANA FICO Chatbot</h1>', unsafe_allow_html=True)
+st.markdown('<p class="subtitle">70+ Topics | Powered by Qwen 2.5 72B | For Commerce, CS, MBA Finance & SAP Professionals</p>', unsafe_allow_html=True)
 
-# Sidebar
+# Sidebar with Reset Button
 with st.sidebar:
-    st.header("🎯 Controls")
-    if st.button("🔄 Reset Chat", use_container_width=True):
+    st.markdown("### 🎯 Controls")
+    
+    # Reset Button
+    st.markdown('<div class="reset-btn">', unsafe_allow_html=True)
+    if st.button("🔄 Reset Chat", use_container_width=True, key="reset_btn"):
         st.session_state.clear()
         st.rerun()
-    st.info("🤖 Model: qwen-2.5-72b-instruct")
-    st.success("📚 KB: 7 Categories, 70 Topics")
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.markdown("---")
+    st.info("🤖 **Model:** qwen-2.5-72b-instruct")
+    st.success("📚 **Knowledge Base:** 70 Topics, 7 Categories")
+    
+    st.markdown("---")
+    st.markdown("### 🎓 Target Audience:")
+    st.markdown("- 📊 Commerce Students")
+    st.markdown("- 💻 Computer Science Students")
+    st.markdown("- 📈 MBA Finance Students")
+    st.markdown("- 🚀 SAP Aspirants")
+    st.markdown("- 👔 SAP Professionals")
+    
+    st.markdown("---")
+    st.caption("📄 License: MIT | 🐙 GitHub + Streamlit Cloud")
 
-# Suggestions
-st.markdown("### 💡 Try These Prompts:")
+# System Suggestion Prompts (10 random prompts)
+st.markdown('<p class="section-header">💡 Try These Prompts:</p>', unsafe_allow_html=True)
+
+# Display 10 prompts in 2 rows of 5 columns
 cols_row1 = st.columns(5)
 cols_row2 = st.columns(5)
-display_prompts = random.sample(SUGGESTIONS, 10)
 
+# Shuffle and select prompts
+display_prompts = random.sample(SUGGESTIONS, min(10, len(SUGGESTIONS)))
+
+# First row (5 prompts)
 for i, prompt in enumerate(display_prompts[:5]):
     with cols_row1[i]:
         if st.button(prompt, key=f"s1_{i}", use_container_width=True):
             st.session_state.selected_prompt = prompt
+            st.rerun()
 
+# Second row (5 prompts)
 for i, prompt in enumerate(display_prompts[5:10]):
     with cols_row2[i]:
         if st.button(prompt, key=f"s2_{i}", use_container_width=True):
             st.session_state.selected_prompt = prompt
+            st.rerun()
 
-# Input Field
-st.markdown("### 📝 Enter Your SAP FICO Query:")
+st.markdown("---")
+
+# Text Field 1: User Query Input
+st.markdown('<p class="section-header">📝 Enter Your SAP FICO Query:</p>', unsafe_allow_html=True)
+
 user_query = st.text_area(
-    "Query Input",
+    label="Query Input",
     value=st.session_state.get("selected_prompt", ""),
-    height=120,
-    placeholder="e.g., Explain Universal Journal (ACDOCA)..."
+    height=150,
+    placeholder="e.g., Explain Universal Journal (ACDOCA) in SAP S/4HANA...",
+    key="query_input",
+    help="Type your SAP FICO question here. Be specific for better answers."
 )
 
 # Submit Button
-if st.button("🚀 Submit", type="primary", use_container_width=True):
+st.markdown('<div class="submit-btn">', unsafe_allow_html=True)
+submit_btn = st.button("🚀 Submit Query", type="primary", use_container_width=True, key="submit_btn")
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Processing Logic
+if submit_btn or st.session_state.get("selected_prompt"):
     if not user_query.strip():
-        st.warning("⚠️ Please enter a question.")
+        st.warning("⚠️ Please enter a question first.")
     elif not API_KEY:
-        st.error("🔑 API Key 'OPENROUTER_API_KEY' not configured!")
+        st.error("🔑 API Key 'OPENROUTER_API_KEY' not configured in Streamlit Cloud secrets!")
+        st.info("Go to Settings → Secrets → Add OPENROUTER_API_KEY")
     else:
         with st.spinner("🔍 Consulting SAP Knowledge Base..."):
             try:
+                # Prepare API request headers
                 headers = {
                     "Authorization": f"Bearer {API_KEY}",
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://github.com/amrithtech23-ux/sap-fico-chatbot",
+                    "X-Title": "SAP S/4HANA FICO Chatbot"
                 }
                 
-                system_prompt = f"""You are an expert SAP S/4HANA FICO consultant.
-Target: Commerce students, CS students, MBA Finance, SAP aspirants, professionals.
+                # System prompt with knowledge base
+                system_prompt = f"""You are an expert SAP S/4HANA FICO consultant and educator.
 
-Use this knowledge base:
+Target audience: Commerce students, Computer Science students, MBA Finance students, 
+SAP ERP aspirants, job seekers in SAP FICO, and SAP professionals.
+
+Use this knowledge base for accurate, domain-specific answers:
 {KB}
 
 Guidelines:
-- Provide comprehensive, detailed answers
-- Use bullet points and examples
-- Reference specific topics from KB
-- Explain clearly for different audiences"""
-
+- Provide COMPREHENSIVE, detailed answers (minimum 300 words)
+- Use bullet points, numbered lists, and headings where appropriate
+- Reference specific topics from the knowledge base when relevant
+- Explain concepts clearly tailored to the user's likely background
+- Include practical examples and real-world scenarios
+- If unsure about a detail, say "Let me check the SAP documentation" rather than guessing
+- Structure answers with: Overview, Key Points, Benefits/Challenges, Examples
+"""
+                
+                # Prepare API payload
                 payload = {
                     "model": MODEL,
                     "messages": [
@@ -338,19 +394,40 @@ Guidelines:
                     "temperature": 0.3
                 }
                 
+                # Call OpenRouter API
                 response = requests.post(API_URL, headers=headers, json=payload, timeout=60)
                 response.raise_for_status()
-                answer = response.json()['choices'][0]['message']['content']
                 
-                st.session_state.last_answer = answer
+                # Extract answer
+                result_data = response.json()
+                bot_answer = result_data['choices'][0]['message']['content']
                 
+                # Store in session state
+                st.session_state.last_query = user_query
+                st.session_state.last_answer = bot_answer
+                st.session_state.selected_prompt = None  # Clear after use
+                
+            except requests.exceptions.Timeout:
+                st.error("⏱️ Timeout: API request took too long. Please try again.")
+            except requests.exceptions.HTTPError as e:
+                if response.status_code == 401:
+                    st.error("🔑 Authentication failed. Check your OpenRouter API key.")
+                elif response.status_code == 429:
+                    st.error("⚠️ Rate limit exceeded. Please wait a moment and try again.")
+                else:
+                    st.error(f"❌ HTTP Error {response.status_code}: {str(e)}")
             except Exception as e:
                 st.error(f"❌ Error: {str(e)}")
 
-# Result Display
+# Text Field 2: Result Display (Multi-line)
 if st.session_state.get("last_answer"):
-    st.markdown("### 📄 Result")
+    st.markdown('<p class="section-header">📄 Result:</p>', unsafe_allow_html=True)
+    # Display with custom styling (blue background, white bold text, bold border)
     st.markdown(f'<div class="result-box">{st.session_state.last_answer}</div>', unsafe_allow_html=True)
+    
+    # Optional: Copy button for result
+    st.caption("💡 **Tip:** Select and copy the answer above for your notes or documentation.")
 
+# Footer
 st.markdown("---")
-st.caption("🎯 Target: Commerce | CS | MBA Finance | SAP Professionals | MIT License")
+st.markdown('<p class="footer">🎯 Target: Commerce | CS | MBA Finance | SAP Aspirants | SAP Professionals | 📄 MIT License | 🚀 Powered by Qwen 2.5 72B via OpenRouter</p>', unsafe_allow_html=True)
