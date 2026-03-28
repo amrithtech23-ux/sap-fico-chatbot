@@ -707,7 +707,7 @@ if 'reset_counter' not in st.session_state:
     st.session_state.reset_counter = 0
 
 # Title
-st.markdown('<h1 class="main-title">⚖️ SAP S/4HANA FICO Chatbot</h1>', unsafe_allow_html=True)
+st.markdown('<h1 class="main-title">⚖️ SAP S/4 HANA FICO Chatbot</h1>', unsafe_allow_html=True)
 st.markdown('<p class="subtitle">70+ Topics | Powered by Qwen 2.5 72B | For Commerce, CS, MBA Finance & SAP Professionals</p>', unsafe_allow_html=True)
 
 # Sidebar with Reset Button
